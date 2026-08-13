@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.h5
+*.pkl
+*.pt
+*.npy
+*.log
+slurm-*.out
+wandb/
+.ipynb_checkpoints/
