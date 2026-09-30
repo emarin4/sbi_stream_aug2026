@@ -1,0 +1,334 @@
+{
+  "data": {
+    "value": {
+      "name": "preprocessed_825_9d_2mil_nocorr_withuncert",
+      "root": "/gpfs/projects/dirac/emarin4/sims",
+      "labels": [
+        "log_mass",
+        "log_scale_radius",
+        "phi1_impact_today",
+        "time_impact",
+        "impact_parameter",
+        "v_rel_para",
+        "v_rel_perp",
+        "angle_pos_at_impact",
+        "delta_angle"
+      ],
+      "features": [
+        "phi1",
+        "phi2",
+        "vr",
+        "pm1",
+        "pm2",
+        "dist"
+      ],
+      "data_type": "preprocessed",
+      "num_datasets": 200,
+      "start_dataset": 0,
+      "num_subsamples": 1
+    }
+  },
+  "norm": {
+    "value": {
+      "type": "detrended",
+      "track_paths": {
+        "vr": "/gpfs/projects/dirac/emarin4/stream_track_vr_poly.pkl",
+        "pm1": "/gpfs/projects/dirac/emarin4/stream_track_pm1_poly.pkl",
+        "pm2": "/gpfs/projects/dirac/emarin4/stream_track_pm2_poly.pkl",
+        "dist": "/gpfs/projects/dirac/emarin4/stream_track_dist_poly.pkl",
+        "phi2": "/gpfs/projects/dirac/emarin4/stream_track_phi2_poly.pkl"
+      }
+    }
+  },
+  "tags": {
+    "value": [
+      "npe",
+      "cheb_conv",
+      "norm_detrended",
+      "npe"
+    ]
+  },
+  "debug": {
+    "value": false
+  },
+  "model": {
+    "value": {
+      "flows": {
+        "num_bins": 8,
+        "randperm": true,
+        "activation": "tanh",
+        "num_transforms": 6,
+        "hidden_features": [
+          128,
+          128
+        ]
+      },
+      "embedding": {
+        "gnn": {
+          "pooling": "mean",
+          "act_args": {
+            "negative_slope": 0.01
+          },
+          "act_name": "leaky_relu",
+          "layer_norm": true,
+          "norm_first": false,
+          "graph_layer": "ChebConv",
+          "hidden_sizes": [
+            128,
+            128,
+            128,
+            128
+          ],
+          "projection_size": 128,
+          "graph_layer_params": {
+            "K": 8
+          }
+        },
+        "mlp": {
+          "dropout": 0.1,
+          "act_args": {
+            "negative_slope": 0.01
+          },
+          "act_name": "leaky_relu",
+          "batch_norm": true,
+          "output_size": 12,
+          "hidden_sizes": [
+            128,
+            128,
+            128,
+            128,
+            128
+          ]
+        }
+      },
+      "input_size": 9,
+      "output_size": 9
+    }
+  },
+  "_wandb": {
+    "value": {
+      "m": [
+        {
+          "1": "trainer/global_step",
+          "6": [
+            3
+          ],
+          "7": []
+        },
+        {
+          "2": "*",
+          "5": 1,
+          "6": [
+            1
+          ],
+          "7": []
+        }
+      ],
+      "t": {
+        "1": [
+          1,
+          9,
+          77,
+          103
+        ],
+        "2": [
+          1,
+          9,
+          77,
+          103
+        ],
+        "3": [
+          1,
+          2,
+          7,
+          15,
+          16,
+          41,
+          62,
+          66
+        ],
+        "4": "3.10.20",
+        "5": "0.26.1",
+        "12": "0.26.1",
+        "13": "linux-x86_64"
+      },
+      "cli_version": "0.26.1",
+      "python_version": "3.10.20"
+    }
+  },
+  "entity": {
+    "value": "desc_sbi_stream"
+  },
+  "workdir": {
+    "value": "/gpfs/projects/dirac/emarin4/sbi_stream/graph_npe"
+  },
+  "patience": {
+    "value": 100
+  },
+  "log_model": {
+    "value": "all"
+  },
+  "norm_dict": {
+    "value": {
+      "x_loc": [
+        -1.4127336740493774,
+        -0.019632577896118164,
+        0.40508273243904114,
+        0.0007534556789323688,
+        0.0028426258359104395,
+        0.09067900478839874,
+        0.18881168961524963,
+        0.1938203722238541,
+        4.391355991363525
+      ],
+      "y_loc": [
+        [
+          7.349484920501709,
+          -0.8010295629501343,
+          -11.500001907348633,
+          -0.27500003576278687,
+          1.5499993562698364,
+          -0.0001220703125,
+          100.00000762939452,
+          90.00004577636719,
+          -0.0000152587890625
+        ]
+      ],
+      "x_scale": [
+        9.11049461364746,
+        0.950302243232727,
+        6.83768892288208,
+        0.22448480129241943,
+        0.2322854846715927,
+        2.468062162399292,
+        0.1200764924287796,
+        0.12326180934906006,
+        2.269151210784912
+      ],
+      "y_scale": [
+        [
+          1.3494839668273926,
+          1.1989692449569702,
+          3.499997138977051,
+          0.2249997854232788,
+          1.44999897480011,
+          199.99964904785156,
+          99.9999771118164,
+          89.99990844726562,
+          89.9999008178711
+        ]
+      ]
+    }
+  },
+  "num_steps": {
+    "value": -1
+  },
+  "optimizer": {
+    "value": {
+      "lr": 0.0005,
+      "name": "AdamW",
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "weight_decay": 0.01
+    }
+  },
+  "scheduler": {
+    "value": {
+      "name": "WarmUpCosineAnnealingLR",
+      "T_mult": 1,
+      "eta_min": 0.002,
+      "restart": false,
+      "interval": "epoch",
+      "decay_steps": 40,
+      "warmup_steps": 2
+    }
+  },
+  "seed_data": {
+    "value": 43
+  },
+  "checkpoint": {
+    "value": null
+  },
+  "flows_args": {
+    "value": "activation: tanh\nhidden_features:\n- 128\n- 128\nnum_bins: 8\nnum_transforms: 6\nrandperm: true\n"
+  },
+  "input_size": {
+    "value": 9
+  },
+  "num_epochs": {
+    "value": 40
+  },
+  "save_top_k": {
+    "value": 5
+  },
+  "train_frac": {
+    "value": 0.8
+  },
+  "accelerator": {
+    "value": "gpu"
+  },
+  "num_workers": {
+    "value": 0
+  },
+  "output_size": {
+    "value": 9
+  },
+  "seed_training": {
+    "value": 44681026
+  },
+  "visualization": {
+    "value": {
+      "plot_rank": true,
+      "plot_tarp": true,
+      "n_val_samples": 200,
+      "plot_median_v_true": true,
+      "n_posterior_samples": 500,
+      "plot_every_n_epochs": 1
+    }
+  },
+  "wandb_project": {
+    "value": "sbi_aau_stepbystep"
+  },
+  "optimizer_args": {
+    "value": "betas:\n- 0.9\n- 0.999\nlr: 0.0005\nname: AdamW\nweight_decay: 0.01\n"
+  },
+  "pre_transforms": {
+    "value": {
+      "graph_args": {
+        "loop": true,
+        "ratio": 0.2
+      },
+      "graph_name": "adaptive_knn",
+      "apply_graph": true
+    }
+  },
+  "scheduler_args": {
+    "value": "T_mult: 1\ndecay_steps: 40\neta_min: 0.002\ninterval: epoch\nname: WarmUpCosineAnnealingLR\nrestart: false\nwarmup_steps: 2\n"
+  },
+  "eval_batch_size": {
+    "value": 256
+  },
+  "reset_optimizer": {
+    "value": false
+  },
+  "train_batch_size": {
+    "value": 256
+  },
+  "gradient_clip_val": {
+    "value": 0.5
+  },
+  "enable_progress_bar": {
+    "value": false
+  },
+  "init_flows_from_embedding": {
+    "value": false
+  },
+  "reuse_embedding_norm_dict": {
+    "value": false
+  },
+  "enable_visualization_callback": {
+    "value": true
+  }
+}
