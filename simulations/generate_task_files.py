@@ -2,10 +2,10 @@
 import os
 import pickle
 
-perturber_dir = "/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/perturbers/pert_813_mocks"
-sims_dir = "/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/sims/sims_pert_813_mocks"
-chunk_size = 100
-out_taskfile = "taskfile_813.txt"
+perturber_dir = "/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/perturbers/pert_825_9d_2mil_nocorr"
+sims_dir = "/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/sims/sims_pert_915_9d_2mil_nocorr_s5foot"
+chunk_size = 10000
+out_taskfile = "taskfile_929.txt"
 
 pert_files = sorted(f for f in os.listdir(perturber_dir) if f.endswith(".pkl"))
 
