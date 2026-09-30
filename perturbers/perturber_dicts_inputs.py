@@ -32,7 +32,7 @@ PRIORS = {
 
     "scale_radius": {
         "distrib": "loguniform", 
-        "args": {"a": 0.01, "b": 2.5}, 
+        "args": {"a": 0.001, "b": 2.5}, #changed 9/15 to try smaller radii
         "units": "kpc",},
 
     "v_perp":{
@@ -57,10 +57,14 @@ PRIORS = {
         "units": "deg",},
     #add this factor onto angle pos to get angle vel, avoiding angles that ever allow the subhalo to move toward the stream
 
+    # "impact_param": {
+    #     "distrib": "uniform", 
+    #     "args": {"loc": 0.5, "scale": 4.5}, 
+    #     "units": "scale_radii",}, #ends up being loguniform distrib in kpc
     "impact_param": {
-        "distrib": "uniform", 
-        "args": {"loc": 0.5, "scale": 4.5}, 
-        "units": "scale_radii",}, #ends up being loguniform distrib in kpc
+         "distrib": "uniform", 
+         "args": {"loc": 0.1, "scale": 2.9}, 
+         "units": "kpc",}, #ends up being loguniform distrib in kpc
 
     "impact_time": {
         "distrib": "uniform", 
@@ -87,16 +91,18 @@ def build_distrib(prior):
 ##Sampling configuration##
 ##########################
 
-VARY = ["mass", "scale_radius"]  # <- parameters actually drawn from PRIORS
+VARY = ["mass", "scale_radius", "v_perp", "v_para", "angle_pos",  "angle_delta", "impact_param",  "impact_time", "phi1_impact_today"]   #"mass", "scale_radius", "v_perp", "v_para", "angle_pos",  "angle_delta", "impact_param",  "impact_time", "phi1_impact_today "
 
 FIXED_VALUES = {
-    "v_perp": 50.0,
-    "v_para": 50.0,
-    "angle_pos": 25.0,
-    "angle_delta": 45.0,
-    "impact_param": 0.5, #kpc        
-    "impact_time": 0.25,
-    "phi1_impact_today": -10.0,
+    #"mass": 8,
+    #"scale_radius": 0.25,
+    #"v_perp": 65.0,
+    #"v_para": -10.0,
+    #"angle_pos": 5.0,
+    #"angle_delta": 5.0, #45.0,
+    #"impact_param": 0.5, #kpc        
+    #"impact_time": 0.25,
+    #"phi1_impact_today": -12.5,
 }
 
 # Sanity check at import time, so a typo fails loudly and immediately
@@ -113,18 +119,18 @@ assert not (set(VARY) & set(FIXED_VALUES.keys())), \
 ##Run configuration##
 #####################
 
-RUN_TAG = "pert_813_mocks" 
+RUN_TAG = "pert_915_9d_2mil_smolradii" 
 RUN_CONFIG = {
-    "seed": 123,
-    "N_target": 100,
-    "N_oversample": 200,
+    "seed": 134,
+    "N_target": 2_000_000,
+    "N_oversample": 2_000_000,
     #"delta_V_cut_kms": 0.3, # keep only perturbers with ΔV > this value
     #"time_window_cut_gyr": 3.0, #try for only the most impulsive impacts, added 8/2
-    "batch_size": 100,
+    "batch_size": 10_000,
     "base_path": "/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/",
     "output_dir": os.path.join("/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/perturbers",
                                RUN_TAG,),
-    "unperturbed_stream_file": "stream_unperturbed_622.pkl",
+    "unperturbed_stream_file": "stream_unperturbed_810.pkl",
     "potential_files": {
         "mw": "McMillan17_nora.ini",
         "lmc": "LMC_nora.ini",
@@ -177,11 +183,13 @@ def sample_priors(rng, n):
         if name in VARY:
             distrib = build_distrib(prior)
             vals = distrib.rvs(n, random_state=rng)
-            if "scale" in prior:
-                vals = vals * prior["scale"]
-            samples[name] = vals
         else:
-            samples[name] = np.full(n, FIXED_VALUES[name])
+            vals = np.full(n, FIXED_VALUES[name])
+        if "scale" in prior:
+                vals = vals * prior["scale"]
+        samples[name] = vals
+        #else:
+            #samples[name] = np.full(n, FIXED_VALUES[name])
     return samples
 
 
@@ -247,7 +255,7 @@ def main():
     angle_vel = angle_pos + angle_delta
     if "impact_param" in VARY:
     # sampled in scale_radii, convert to kpc
-        impact_param = s["impact_param"] * scale_radius
+        impact_param = s["impact_param"] #* scale_radius
     else:
         # held fixed at an absolute kpc value — do NOT multiply by scale_radius
         impact_param = s["impact_param"]  # already kpc, shape (n,) from np.full

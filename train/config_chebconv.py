@@ -14,22 +14,35 @@ def get_config():
     config.data = ConfigDict()
     config.data.data_type = 'preprocessed' #already subsampled 
     config.data.root = '/gpfs/projects/dirac/emarin4/sims'
-    config.data.name = 'preprocessed_812_1_000_000'
-    config.data.features = ['phi1', 'phi2', 'vr', 'pm1', 'pm2', 'dist']
-    config.data.labels = ['log_mass', 'log_scale_radius'] # , 'phi1_impact_today', 'time_impact',
-                      #'log_impact_parameter', 'v_rel_para', 'v_rel_perp', 
-                      #'angle_pos_at_impact', 'delta_angle']
-    config.data.num_datasets = 100 #38 
+    config.data.name = 'preprocessed_825_9d_2mil_nocorr_withuncert_nodist'
+    config.data.features = ['phi1', 'phi2', 'vr', 'pm1', 'pm2'] #dist
+    config.data.labels = ['log_mass', 'log_scale_radius', 'phi1_impact_today', 'time_impact',
+                      'impact_parameter', 'v_rel_para', 'v_rel_perp', 
+                      'angle_pos_at_impact', 'delta_angle']
+    config.data.num_datasets = 200 #38 
     config.data.start_dataset = 0
     config.data.num_subsamples = 1 #atleast 10  , 
     config.train_frac = 0.8
     config.num_workers = 0
+
+    #Normalization configuration
+    config.norm = norm = ConfigDict()
+    norm.type = "old" #"detrended" 
+    #norm.track_paths = {
+    #'phi2': '/gpfs/projects/dirac/emarin4/stream_track_phi2_poly.pkl',
+    #'vr':   '/gpfs/projects/dirac/emarin4/stream_track_vr_poly.pkl',
+    #'pm1':  '/gpfs/projects/dirac/emarin4/stream_track_pm1_poly.pkl',
+    #'pm2':  '/gpfs/projects/dirac/emarin4/stream_track_pm2_poly.pkl',
+    #'dist': '/gpfs/projects/dirac/emarin4/stream_track_dist_poly.pkl',
+#}
 
     ## LOGGING AND WANDB CONFIGURATION ###
     config.workdir = '/gpfs/projects/dirac/emarin4/sbi_stream/graph_npe'
     config.wandb_project = 'sbi_aau_stepbystep' #change name
     config.entity = "desc_sbi_stream"
     config.tags = ['npe', 'cheb_conv']
+    config.tags.append(f"norm_{config.get('norm', ConfigDict()).get('type', 'old')}")
+    #config.tags.append(f"uncert_{'yes' if model.input_size == 9 else 'no'}")
     config.debug = False
     config.checkpoint = None  # Path to NPE checkpoint for resuming
     config.reset_optimizer = False
@@ -40,9 +53,9 @@ def get_config():
     # if import embedding_nn from a pre-trained model, this should always be True
     config.reuse_embedding_norm_dict = False
 
-    ### MODEL CONFIGURATION ###
+    ### MODEL CONFIGURATION ### 
     config.model = model = ConfigDict()
-    model.input_size =  len(config.data.features) #9 #CHANGED for no uncert #len(config.data.features) * 2 #multiply by 2 for uncertainties
+    model.input_size =  8 #len(config.data.features) #9 #CHANGED for no uncert #len(config.data.features) * 2 #multiply by 2 for uncertainties
     model.output_size = len(config.data.labels)
 
     # Embedding network configuration

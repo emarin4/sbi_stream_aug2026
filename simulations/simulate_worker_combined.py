@@ -5,6 +5,7 @@ import sys
 import pickle
 import numpy as np
 from tqdm import tqdm
+import pandas as pd
 
 sys.path.append("/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims")
 
@@ -17,10 +18,11 @@ agama.setUnits(mass=1, length=1, velocity=1)
 ###################################
 ##Define input/output directories##
 ###################################
-RUN_TAG = "pert_813_mocks"
+RUN_TAG = "pert_825_9d_2mil_nocorr"
+
 
 perturber_dir = os.path.join("/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/perturbers", RUN_TAG)
-output_dir = os.path.join("/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/sims", "sims_"+ RUN_TAG)
+output_dir = os.path.join("/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/sims", "sims_"+ RUN_TAG +"_s5foot")
 os.makedirs(output_dir, exist_ok=True)
 
 ########################
@@ -56,6 +58,13 @@ meta = streamdata["metadata"]
 distrib_stripping = np.load(os.path.join(BASE_PATH, "distrib_stripping_810.npy"))
 #gauss_stripping = np.load(BASE_PATH + "gauss_stripping_622.npy")
 
+#####################
+##Load S5 footprint##
+#####################
+_fp = pd.read_csv(os.path.join(BASE_PATH, "aau_footprint.csv"))
+_fp = _fp[_fp["group"] == "AAU"]
+AAU_FOOTPRINT = _fp[["phi1", "phi2"]].values  # (29, 2)
+FIELD_RADIUS = _fp["field_radius_deg"].values 
 
 
 def simulate_stream_from_pert(pert_dict, meta, distrib_stripping):
@@ -80,7 +89,16 @@ def simulate_stream_from_pert(pert_dict, meta, distrib_stripping):
   
     part_xv = stream_perturb["part_xv"]
     coords = sfr.galcen_to_aau_full(part_xv)
-    feats = np.column_stack([coords[name] for name in sfr.NODE_FEATURE_NAMES])
+
+    phi1 = coords["phi1"]
+    phi2 = coords["phi2"]
+    dphi1 = phi1[:, None] - AAU_FOOTPRINT[:, 0]
+    dphi2 = phi2[:, None] - AAU_FOOTPRINT[:, 1]
+    in_footprint = (np.sqrt(dphi1**2 + dphi2**2) <= FIELD_RADIUS).any(axis=1)
+    #print(f"  {in_footprint.sum()} / {len(in_footprint)} particles in footprint ({100*in_footprint.mean():.1f}%)")
+
+
+    feats = np.column_stack([coords[name][in_footprint] for name in sfr.NODE_FEATURE_NAMES])
 
     return feats
 
@@ -89,7 +107,7 @@ def simulate_stream_from_pert(pert_dict, meta, distrib_stripping):
 ########
 
 PARAM_NAMES = ["mass", "scale_radius", "phi1_impact_today", "impact_time", 
-    "impact_param", "v_para", "v_perp", "angle_pos", "angle_vel",]
+    "impact_param", "v_para", "v_perp", "angle_pos", "angle_vel"]
 
 def main():
     pert_file = sys.argv[1]

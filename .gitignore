@@ -1,10 +1,6 @@
-__pycache__/
-*.pyc
-*.h5
-*.pkl
-*.pt
-*.npy
-*.log
-slurm-*.out
-wandb/
-.ipynb_checkpoints/
+LMC_nora.ini
+McMillan17_nora.ini
+accMW
+distrib_stripping_810.npy
+stream_unperturbed_810.pkl
+trajLMC

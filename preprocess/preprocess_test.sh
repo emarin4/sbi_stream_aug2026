@@ -6,10 +6,10 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32G
 #SBATCH --job-name=preprocess
-#SBATCH --time=00:15:00
+#SBATCH --time=06:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user emarin4@uw.edu
-#SBATCH --array=0-1
+#SBATCH --array=0-200
 #SBATCH --output=logs/preprocess_newpreprocess_fulllog_%a.out
 
 

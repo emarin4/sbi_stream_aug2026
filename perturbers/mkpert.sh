@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=64G
-#SBATCH --time=00:30:00
+#SBATCH --time=02:00:00
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=emarin4@uw.edu
 #SBATCH --output=logs/perturber_dicts_%j.out
