@@ -1,3 +1,6 @@
 [submodule "sbi_stream_code"]
 	path = sbi_stream_code
 	url = https://github.com/emarin4/sbi_stream.git
+[submodule "Nbody_streams"]
+	path = Nbody_streams
+	url = https://github.com/appy2806/Nbody_streams.git
