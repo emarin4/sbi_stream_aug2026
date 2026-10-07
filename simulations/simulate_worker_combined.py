@@ -22,7 +22,7 @@ RUN_TAG = "pert_825_9d_2mil_nocorr"
 
 
 perturber_dir = os.path.join("/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/perturbers", RUN_TAG)
-output_dir = os.path.join("/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/sims", "sims_"+ RUN_TAG +"_s5foot")
+output_dir = os.path.join("/expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/sims", "sims_"+ RUN_TAG +"_s5foot_500part_seed79")
 os.makedirs(output_dir, exist_ok=True)
 
 ########################
@@ -50,12 +50,12 @@ potTotal = agama.Potential(potMW, potLMCm, potacc)
 ##Load unpert stream and stripping times##
 ##########################################
 
-unpert_stream_path = os.path.join(BASE_PATH, "stream_unperturbed_810.pkl")
+unpert_stream_path = os.path.join(BASE_PATH, "stream_unperturbed_104.pkl")
 with open(unpert_stream_path, "rb") as f:
     streamdata = pickle.load(f)
 meta = streamdata["metadata"]
 
-distrib_stripping = np.load(os.path.join(BASE_PATH, "distrib_stripping_810.npy"))
+distrib_stripping = np.load(os.path.join(BASE_PATH, "distrib_stripping_104.npy"))
 #gauss_stripping = np.load(BASE_PATH + "gauss_stripping_622.npy")
 
 #####################
@@ -76,7 +76,7 @@ def simulate_stream_from_pert(pert_dict, meta, distrib_stripping):
         scaleradius=meta["prog_scaleradius_kpc"],
         prog_pot_kind='Plummer',
         sat_cen_present=meta["prog_wtoday"],
-        num_particles=meta["num_particles"],
+        num_particles= meta["num_particles"],
         time_end=0.0,
         time_total=meta["Age_stream_Gyr"],
         save_rate=1,
@@ -84,7 +84,7 @@ def simulate_stream_from_pert(pert_dict, meta, distrib_stripping):
         add_perturber=pert_dict,
         verbose=False,
         dissolve_progenitor = True,
-        seed = None,
+        seed = 79,#None,
     )
   
     part_xv = stream_perturb["part_xv"]

@@ -15,7 +15,7 @@
 source ~/.bashrc
 conda activate sbi-stream
 
-cd /expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims
+cd /expanse/lustre/projects/upa160/lmarin/aau_sbi_project/run_sims/simulations
 
-disBatch taskfile_929.txt
+disBatch taskfile_929remaining.txt
 #python -u simulate_worker_combined.py perturbers_batch_0000.pkl 0 10000
